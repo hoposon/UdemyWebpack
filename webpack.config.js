@@ -1,11 +1,13 @@
 const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const config = {
 
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath:'build/'
     },
     module: {
         rules: [
@@ -14,11 +16,26 @@ const config = {
                 test: /\.js$/
             },
             {
-                use: ['style-loader', 'css-loader'],
+                use: ExtractTextPlugin.extract({
+                    use: 'css-loader'
+                }),
                 test: /\.css$/
+            },
+            {
+                test: /\.(jpe?g|png|giv|svg)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {limit: 40000}
+                    },
+                    'image-webpack-loader'
+                ]
             }
         ]
-    }
+    },
+    plugins: [
+        new ExtractTextPlugin('style.css')
+    ]
 
 };
 
